@@ -1,0 +1,17 @@
+# WorkBuddy 签到助手 · 仅版本化源码，排除凭据 / 日志 / 运行时产物
+# 默认忽略目录内一切，仅放行下列白名单，避免误提交其他 skill 脚本或敏感文件。
+*
+!.gitignore
+!auto_checkin.py
+!web_auth.py
+!workbuddy_checkin.py
+!rt_auth.py
+!push_message.py
+!notify_config.json.example
+!templates/
+!templates/auth-snippet.js
+
+# 敏感与运行时（强制排除，无论如何不入库）
+notify_config.json
+checkin-cred.json
+*.log
