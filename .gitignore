@@ -10,6 +10,7 @@
 !notify_config.json.example
 !templates/
 !templates/auth-snippet.js
+!README.md
 
 # 敏感与运行时（强制排除，无论如何不入库）
 notify_config.json
