@@ -666,9 +666,16 @@ def write_log(res):
     """把每次运行结果追加写入脚本同目录的 checkin.log（不含凭据）。"""
     try:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), LOG_NAME)
+        msg = res.get("msg", "")
+        # 旅行信息单独拼到日志，即使 msg 里不再包含它
+        tv = res.get("travel")
+        if tv and tv.get("available"):
+            tmsg = _fmt_travel(tv)
+            if tmsg:
+                msg = (msg + " " + tmsg).strip()
         line = "%s | status=%s | action=%s | msg=%s\n" % (
             time.strftime("%Y-%m-%d %H:%M:%S"),
-            res.get("status"), res.get("action"), res.get("msg"))
+            res.get("status"), res.get("action"), msg)
         with open(path, "a", encoding="utf-8") as f:
             f.write(line)
     except Exception:
@@ -783,10 +790,9 @@ def checkin(travel_on=True, location=None, domain=None,
     if travel_on:
         tv = travel(cred, location, travel_domain)
         res["travel"] = tv
-        if tv.get("available"):
-            tmsg = _fmt_travel(tv)
-            if tmsg:
-                res["msg"] = (res.get("msg", "") + " " + tmsg).strip()
+        # 注意：旅行信息不拼进 msg，只通过 res["travel"] 在推送里单独展示，
+        # 避免 notify_result 中"状态"行和"🌏 派猫猫旅行"行重复展示。
+        # 日志里单独记录旅行信息。
 
     notify_result(res, suppress=not notify)
     res.pop("cred", None)
